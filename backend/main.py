@@ -15,7 +15,7 @@ class TripRequest(BaseModel):
     budget: float
 
 # ==========================================
-# 1. ENDPOINT UTAMA (WAJIB)
+# 1. ENDPOINT UTAMA 
 # ==========================================
 
 # Endpoint Welcome (Home Route)
@@ -48,7 +48,7 @@ def create_trip(request: TripRequest):
     }
 
 # ==========================================
-# 2. HOMEWORK - TWO NEW ENDPOINTS (Halaman 21)
+# 2. HOMEWORK - TWO NEW ENDPOINTS 
 # ==========================================
 
 # Endpoint Mendapatkan Daftar Rekomendasi Tempat
@@ -71,3 +71,5 @@ def get_recommendations():
 @app.get("/api/v1/transportations")
 def get_transportations():
     return ["Bus", "Train", "Flight"] #
+#
+# Add recommendations and transportations GET endpoints
