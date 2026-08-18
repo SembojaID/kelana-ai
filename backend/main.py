@@ -1,43 +1,62 @@
-# backend/main.py
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
 
-# Mengimpor fungsi logika bisnis dari modul services.trip_service
-from services.trip_service import (
-    get_trip_category, 
-    get_travel_session, 
-    calculate_daily_budget, 
-    get_recommended_places
-)
+# Mengimpor fungsi logika bisnis dari Sesi 2 tanpa mengubahnya
+from services.trip_service import calculate_daily_budget, get_trip_category
 
-def main():
-    # Menangani interaksi I/O pengguna
-    destination = input("Masukkan Destination: ")
-    days = int(input("Masukkan Days: "))
-    budget = float(input("Masukkan Budget: "))
-    currency = input("Masukkan Currency (contoh: USD): ")
-    travel_month = input("Masukkan Travel Month: ")
+# Membuat instance aplikasi FastAPI
+app = FastAPI(title="KelanaAI API")
 
-    # Memproses data menggunakan fungsi dari trip_service
-    category = get_trip_category(budget)
-    season = get_travel_session(travel_month)
-    daily_budget = calculate_daily_budget(budget, days)
-    places = get_recommended_places(destination)
+# Membuat Pydantic Model untuk memvalidasi data input JSON
+class TripRequest(BaseModel):
+    destination: str
+    days: int
+    budget: float
 
-    # Menampilkan hasil akhir
-    print("\n==================================")
-    print("KelanaAI")
-    print("==================================")
-    print(f"Destination  : {destination}")
-    print(f"Days         : {days}")
-    print(f"Budget       : {budget:g} {currency}")
-    print(f"Category     : {category}")
-    print(f"Daily Budget : {daily_budget:g} {currency}/Day")
-    print(f"Travel Month : {travel_month}")
-    print(f"Season       : {season}")
-    print("Recommended Places")
+# ==========================================
+# 1. ENDPOINT UTAMA (WAJIB)
+# ==========================================
+
+# Endpoint Welcome (Home Route)
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to KelanaAI"
+    }
+
+# Endpoint Health Check
+@app.get("/health")
+def health_check():
+    return {
+        "status": "OK"
+    }
+
+# Endpoint Membuat Rencana Perjalanan (POST)
+@app.post("/api/v1/trips")
+def create_trip(request: TripRequest):
+    # Memproses data menggunakan fungsi dari trip_service Sesi 2
+    daily_budget = calculate_daily_budget(request.budget, request.days)
+    category = get_trip_category(request.budget)
     
-    # Iterasi menggunakan Loop for untuk menampilkan tempat
-    for place in places:
-        print(place)
+    return {
+        "destination": request.destination,
+        "days": request.days,
+        "budget": request.budget,
+        "daily_budget": daily_budget,
+        "category": category
+    }
 
-if __name__ == "__main__":
-    main()c
+# ==========================================
+# 2. HOMEWORK - TWO NEW ENDPOINTS (Halaman 21)
+# ==========================================
+
+# Endpoint Mendapatkan Daftar Rekomendasi Tempat
+@app.get("/api/v1/recommendations", response_model=List[str])
+def get_recommendations():
+    return ["Tokyo Tower", "Mount Fuji", "Shibuya"]
+
+# Endpoint Mendapatkan Daftar Transportasi
+@app.get("/api/v1/transportations", response_model=List[str])
+def get_transportations():
+    return ["Bus", "Train", "Flight"]
