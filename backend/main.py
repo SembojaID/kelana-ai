@@ -15,7 +15,7 @@ class TripRequest(BaseModel):
     budget: float
 
 # ==========================================
-# 1. ENDPOINT UTAMA 
+# 1. ENDPOINT UTAMA (WAJIB)
 # ==========================================
 
 # Endpoint Welcome (Home Route)
@@ -60,16 +60,3 @@ def get_recommendations():
 @app.get("/api/v1/transportations", response_model=List[str])
 def get_transportations():
     return ["Bus", "Train", "Flight"]
-#
-#
-# Endpoint 1: Mengembalikan daftar rekomendasi tempat wisata
-@app.get("/api/v1/recommendations")
-def get_recommendations():
-    return ["Tokyo Tower", "Mount Fuji", "Shibuya"] #
-
-# Endpoint 2: Mengembalikan daftar pilihan moda transportasi
-@app.get("/api/v1/transportations")
-def get_transportations():
-    return ["Bus", "Train", "Flight"] #
-#
-# Add recommendations and transportations GET endpoints
